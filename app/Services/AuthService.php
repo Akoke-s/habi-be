@@ -11,7 +11,7 @@ class AuthService {
     public function __construct(
         public EmailService $emailService
     ){}
-    /* create a new user account
+    /** create a new user account
     * @param App\Http\Requests\RegisterUserRequest|obj $userDetails
     * @return App\Models\User
     */
@@ -32,7 +32,7 @@ class AuthService {
         });
     }
 
-    /* create user profile
+    /** create user profile
     * @param App\Models\User $user
     * @return App\Models\Profile
     */

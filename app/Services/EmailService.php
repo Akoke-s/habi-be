@@ -4,8 +4,9 @@ namespace App\Services;
 
 use App\Enums\EmailVerificationStatusEnum;
 use App\Mail\UserRegistered;
-use App\Models\VerifyEmail;
+use App\Models\{User, VerifyEmail};
 use Illuminate\Support\Facades\{DB, Mail};
+use Illuminate\Http\{Response};
 use Carbon\Carbon;
 
 class EmailService {
@@ -30,5 +31,44 @@ class EmailService {
 
             return $verification;
         });
+    }
+
+    /** verify email
+     * @param string $code
+     * 
+    */
+
+    public function verify_email($code) {
+        if($codeFound = VerifyEmail::where('code', $code)->first()) {
+            if(Carbon::parse($codeFound->expires_in)->diffInHours(Carbon::now()) < 24 && $codeFound->status == EmailVerificationStatusEnum::UNVERIFIED) {
+                //update the verification model
+                return DB::transaction(function() use($codeFound) {
+                    
+                    $codeFound->update(
+                        [
+                            'status' => EmailVerificationStatusEnum::VERIFIED,
+                        ]
+                    );
+                    
+                    $user = User::where('id', $codeFound->user_id)->first();
+
+                    $user->email_verified_at = Carbon::now();
+                    $user->save();
+                    
+                    return response()->json([
+                        'message' => 'Verification successful',
+                        'data' => $codeFound
+                    ], Response::HTTP_CREATED);
+                });
+            }
+
+            return response()->json([
+                'message' => 'This code is expired',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return response()->json([
+            'message' => 'The code does not exist',
+        ], Response::HTTP_NOT_FOUND);
     }
 }
