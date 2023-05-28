@@ -4,7 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Enum\UserRoleEnum;
+use App\Enums\UserRoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,7 +21,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'firstname',
+        'lastname',
+        'role',
         'email',
         'password',
     ];
@@ -50,7 +52,7 @@ class User extends Authenticatable
     /**
      * Get the user's full name.
      */
-    protected function name(): Attribute
+    protected function fullname(): Attribute
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $attributes['firstname'] .' '. $attributes['lastname']

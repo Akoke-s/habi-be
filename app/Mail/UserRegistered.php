@@ -32,7 +32,7 @@ class UserRegistered extends Mailable
     {
         return new Envelope(
             from: new Address('welcome@habiclothiers.com', 'Habic'),
-            subject: 'Welcome to ' . app()->name . ' ' . $this->user->name,
+            subject: 'Welcome to ' . config('app.name') . ' ' . $this->user->fullname,
         );
     }
 
