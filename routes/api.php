@@ -42,12 +42,18 @@ Route::prefix('auth')->group(function() {
     });
 
     Route::middleware('auth:sanctum')->group(function() {
-        Route::apiResources([
-            'categories', CategoryController::class,
-            'products', ProductController::class
-        ]);
+        // Route::resources([
+        //     'categories', CategoryController::class,
+        //     // 'products', ProductController::class
+        // ]);
+        Route::resource('categories', CategoryController::class);
+        Route::resource('products', ProductController::class);
+        // Route::controller(ProductController::class)->group(function() {
+        //     Route::get('products', 'index');
+        // });
 
-        Route::apiResource('colors', ColorController::class)->except(['store']);
+        Route::resource('colors', ColorController::class)->except(['index']);
+        Route::get('colors/{product:slug}/product', [ColorController::class, 'index']);
         Route::post('colors/{product:slug}', [ColorController::class, 'store']);
     });
     

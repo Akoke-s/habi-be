@@ -26,6 +26,7 @@ class ProductController extends Controller
                 'name',
                 'image',
                 'description',
+                'slug',
                 'type',
             ])->orderBy('created_at', 'desc')->get();
 
