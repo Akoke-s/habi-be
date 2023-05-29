@@ -57,6 +57,7 @@ Route::prefix('auth')->group(function() {
                 Route::get('/{size:id}', 'show');
                 Route::post('/{color:id}/color', 'store');
                 Route::put('/{size:id}', 'update');
+                Route::delete('/{size:id}', 'destroy');
             });
         });
     });

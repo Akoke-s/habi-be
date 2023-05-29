@@ -113,8 +113,29 @@ class SizeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Size $size): JsonResponse
     {
-        //
+        
+        try {
+            if($size->stock) {
+                $size->stock->delete();
+            }
+
+            $delete = $size->delete();
+
+            return response()->json([
+                'success' => $delete,
+                'message' => 'deleted size successfully'
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
     }
 }
