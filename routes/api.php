@@ -23,5 +23,6 @@ Route::controller(AuthController::class)->group(function() {
     Route::prefix('auth')->group(function() {
         Route::post('register', 'register');
         Route::post('verify-account', 'verify_user_email');
+        Route::post('login', 'login');
     });
 });
