@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSizeRequest;
+use App\Http\Requests\{StoreSizeRequest, UpdateSizeRequest};
 use App\Http\Resources\SizeResource;
-use App\Models\Color;
+use App\Models\{Color, Size};
 use App\Services\SizeService;
 use Illuminate\Http\{JsonResponse, Response};
-use Illuminate\Http\Request;
 
 class SizeController extends Controller
 {
@@ -69,25 +68,46 @@ class SizeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Size $size)
     {
-        //
+        try {
+
+            return response()->json([
+                'success' => true,
+                'size' => new SizeResource($size)
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateSizeRequest $request, Size $size)
     {
-        //
+        try {
+            $updated_size = $this->sizeService->update_size($request, $size);
+            return response()->json([
+                'success' => $updated_size,
+                'message' => 'Updated size successfully'
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**

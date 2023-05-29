@@ -11,7 +11,7 @@ class UpdateSizeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class UpdateSizeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['nullable', 'string'],
+            'amount' => ['nullable', 'integer'],
+            'add_qty' => ['nullable', 'integer'],
         ];
     }
 }

@@ -18,6 +18,8 @@ class Size extends Model
         return $this->belongsTo(Color::class);
     }
 
+    protected $with = 'stock';
+    
     public function stock(): Relation
     {
         return $this->hasOne(Stock::class);

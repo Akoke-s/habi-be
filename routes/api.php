@@ -54,7 +54,9 @@ Route::prefix('auth')->group(function() {
         Route::prefix('sizes')->group(function() {
             Route::controller(SizeController::class)->group(function() {
                 Route::get('/{color:id}/color', 'index');
+                Route::get('/{size:id}', 'show');
                 Route::post('/{color:id}/color', 'store');
+                Route::put('/{size:id}', 'update');
             });
         });
     });

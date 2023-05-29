@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Size;
+use App\Models\{Size, Stock};
 
 class StockService {
 
@@ -15,9 +15,21 @@ class StockService {
     {
         return $size->stock()->create([
             'init_qty' => $qty,
-            'available_qty' => 0,
+            'available_qty' => $qty,
             'sold_qty' => 0,
             'in_cart' => 0,
+        ]);
+    }
+
+    /** update available stock qty for a given size
+     * @param App\Models\Stock $stock
+     * @param int $qty
+     * @return \Illuminate\Auth\Access\Response|bool
+    */
+    public function update_available_stock_qty(int $qty, Stock $stock) 
+    {
+        return $stock->update([
+            'available_qty' => $stock->available_qty + $qty,
         ]);
     }
 }
