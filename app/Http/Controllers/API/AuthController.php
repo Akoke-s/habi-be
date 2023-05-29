@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\IncorrectPasswordException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\{
+    LoginRequest, 
+    RegisterUserRequest,
+    UpdatePasswordRequest,
+    VerifyAccountRequest
+};
 use App\Http\Resources\UserResource;
 use App\Services\{AuthService, EmailService};
 use Illuminate\Http\{JsonResponse, Response};
-use App\Http\Requests\VerifyAccountRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\{Auth};
+use Illuminate\Support\Facades\{Auth, Hash,};
 
 class AuthController extends Controller
 {
@@ -90,6 +94,38 @@ class AuthController extends Controller
             report($e);
             return response()->json([
                 'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /** update user password
+     * @param App\Http\Requests\UpdatePasswordRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+    */
+    public function update_password(UpdatePasswordRequest $request): JsonResponse
+    {
+        try {
+
+            $user = auth()->user();
+            // check if old password is a match
+            if(!Hash::check($request->validated('old_password'), $user->password)) {
+                throw new IncorrectPasswordException();
+            }
+
+            $user->update([
+                'password' => Hash::make($request->validated()['new_password'])
+            ]);
+
+            return response()->json([
+                'message' => 'Password changed successfully',
+            ], Response::HTTP_OK);
+
+        } catch(\Throwable $exception) {
+            report($exception);
+            return response()->json([
+                'error' => $exception->getMessage(),
                 'message' => 'Something went wrong. Please try again'
             ], Response::HTTP_BAD_REQUEST);
         }
