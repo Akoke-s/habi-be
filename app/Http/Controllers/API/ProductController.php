@@ -133,8 +133,36 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Product $product)
     {
-        //
+        try {
+            $colors = $product->colors;
+            if(count($colors) > 0) {
+                foreach($colors as $color) {
+                    if(count($color->sizes) > 0) {
+                        foreach($color->sizes as $size) {
+                            $size->delete();
+                        }
+                    }
+                    
+                    $color->delete();
+                }
+            }
+
+            $delete = $product->delete();
+
+            return response()->json([
+                'success' => $delete,
+                'message' => 'deleted product successfully'
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 }
