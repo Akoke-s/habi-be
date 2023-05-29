@@ -4,7 +4,8 @@ use App\Http\Controllers\API\{
     AuthController, 
     CategoryController,
     ColorController,
-    ProductController
+    ProductController,
+    SizeController
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,19 +43,20 @@ Route::prefix('auth')->group(function() {
     });
 
     Route::middleware('auth:sanctum')->group(function() {
-        // Route::resources([
-        //     'categories', CategoryController::class,
-        //     // 'products', ProductController::class
-        // ]);
+        
         Route::resource('categories', CategoryController::class);
         Route::resource('products', ProductController::class);
-        // Route::controller(ProductController::class)->group(function() {
-        //     Route::get('products', 'index');
-        // });
 
         Route::resource('colors', ColorController::class)->except(['index']);
         Route::get('colors/{product:slug}/product', [ColorController::class, 'index']);
         Route::post('colors/{product:slug}', [ColorController::class, 'store']);
+
+        Route::prefix('sizes')->group(function() {
+            Route::controller(SizeController::class)->group(function() {
+                Route::get('/{color:id}/color', 'index');
+                Route::post('/{color:id}/color', 'store');
+            });
+        });
     });
     
 });

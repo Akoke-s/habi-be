@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\GenericStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\{HasSlug, SlugOptions};
 
@@ -26,5 +27,10 @@ class Color extends Model
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
+    }
+
+    public function sizes(): Relation
+    {
+        return $this->hasMany(Size::class);
     }
 }
