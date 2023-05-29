@@ -2,30 +2,22 @@
 
 namespace App\Models;
 
-use App\Enums\{GenericStatusEnum, ProductTypeEnum};
+use App\Enums\GenericStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\{HasSlug, SlugOptions};
 
-class Product extends Model
+class Color extends Model
 {
     use HasFactory, SoftDeletes, HasSlug;
 
     protected $guarded = [];
 
     protected $casts = [
-        'status' => GenericStatusEnum::class,
-        'type' => ProductTypeEnum::class
+        'status' => GenericStatusEnum::class
     ];
-
-    public function category(): Relation
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    protected $with = 'category';
 
     /**
      * Get the options for generating the slug.
@@ -37,8 +29,8 @@ class Product extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function colors(): Relation
+    public function sizes(): Relation
     {
-        return $this->hasMany(Color::class);
+        return $this->hasMany(Size::class);
     }
 }

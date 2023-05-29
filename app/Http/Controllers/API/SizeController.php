@@ -3,36 +3,26 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{StoreProductRequest, UpdateProductRequest};
-use App\Http\Resources\ProductResource;
-use App\Models\Product;
-use App\Services\ProductService;
+use App\Http\Requests\{StoreSizeRequest, UpdateSizeRequest};
+use App\Http\Resources\SizeResource;
+use App\Models\{Color, Size};
+use App\Services\SizeService;
 use Illuminate\Http\{JsonResponse, Response};
 
-class ProductController extends Controller
+class SizeController extends Controller
 {
-
     public function __construct(
-        public ProductService $productService
+        public SizeService $sizeService
     ){}
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Color $color)
     {
         try {
-            $products = Product::select([
-                'id',
-                'name',
-                'image',
-                'description',
-                'slug',
-                'type',
-            ])->orderBy('created_at', 'desc')->get();
-
             return response()->json([
                 'success' => true,
-                'products' => $products
+                'sizes' => $color->sizes
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -56,16 +46,14 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request): JsonResponse
+    public function store(StoreSizeRequest $request, Color $color): JsonResponse
     {
         try {
-            $product = $this->productService->create_new_product($request);
-
+            $size = $this->sizeService->create_new_size($request, $color);
             return response()->json([
                 'success' => true,
-                'message' => 'Product created successfully',
-                'product' => new ProductResource($product)
-            ], Response::HTTP_CREATED);
+                'color' => new SizeResource($size)
+            ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
             report($e);
@@ -80,13 +68,13 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Size $size)
     {
         try {
 
             return response()->json([
                 'success' => true,
-                'product' => new ProductResource($product)
+                'size' => new SizeResource($size)
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -99,25 +87,17 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateSizeRequest $request, Size $size)
     {
         try {
-            $product = $this->productService->update_product($request, $product);
-
+            $updated_size = $this->sizeService->update_size($request, $size);
             return response()->json([
-                'success' => true,
-                'message' => 'Product updated successfully',
+                'success' => $updated_size,
+                'message' => 'Updated size successfully'
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -133,27 +113,19 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(Size $size): JsonResponse
     {
+        
         try {
-            $colors = $product->colors;
-            if(count($colors) > 0) {
-                foreach($colors as $color) {
-                    if(count($color->sizes) > 0) {
-                        foreach($color->sizes as $size) {
-                            $size->delete();
-                        }
-                    }
-                    
-                    $color->delete();
-                }
+            if($size->stock) {
+                $size->stock->delete();
             }
 
-            $delete = $product->delete();
+            $delete = $size->delete();
 
             return response()->json([
                 'success' => $delete,
-                'message' => 'deleted product successfully'
+                'message' => 'deleted size successfully'
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -164,5 +136,6 @@ class ProductController extends Controller
                 'message' => 'Something went wrong. Please try again'
             ], Response::HTTP_BAD_REQUEST);
         }
+
     }
 }

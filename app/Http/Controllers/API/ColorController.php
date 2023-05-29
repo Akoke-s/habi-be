@@ -3,36 +3,28 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{StoreProductRequest, UpdateProductRequest};
-use App\Http\Resources\ProductResource;
-use App\Models\Product;
-use App\Services\ProductService;
+use App\Http\Requests\{StoreColorRequest, UpdateColorRequest};
+use App\Http\Resources\ColorResource;
+use App\Models\{Color, Product};
+use App\Services\ColorService;
 use Illuminate\Http\{JsonResponse, Response};
+use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class ColorController extends Controller
 {
 
     public function __construct(
-        public ProductService $productService
+        public ColorService $colorService
     ){}
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Product $product): JsonResponse
     {
         try {
-            $products = Product::select([
-                'id',
-                'name',
-                'image',
-                'description',
-                'slug',
-                'type',
-            ])->orderBy('created_at', 'desc')->get();
-
             return response()->json([
                 'success' => true,
-                'products' => $products
+                'colors' => $product->colors
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -46,26 +38,16 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request): JsonResponse
+    public function store(StoreColorRequest $request, Product $product): JsonResponse
     {
         try {
-            $product = $this->productService->create_new_product($request);
-
+            $color = $this->colorService->create_new_color($request, $product);
             return response()->json([
                 'success' => true,
-                'message' => 'Product created successfully',
-                'product' => new ProductResource($product)
-            ], Response::HTTP_CREATED);
+                'color' => new ColorResource($color)
+            ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
             report($e);
@@ -80,13 +62,13 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Color $color)
     {
         try {
 
             return response()->json([
                 'success' => true,
-                'product' => new ProductResource($product)
+                'color' => new ColorResource($color)
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -99,25 +81,17 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateColorRequest $request, Color $color)
     {
         try {
-            $product = $this->productService->update_product($request, $product);
-
+            $color = $this->colorService->update_color($request, $color);
             return response()->json([
-                'success' => true,
-                'message' => 'Product updated successfully',
+                'success' => $color,
+                'message' => 'Updated color successfully'
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -133,27 +107,20 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(Color $color)
     {
         try {
-            $colors = $product->colors;
-            if(count($colors) > 0) {
-                foreach($colors as $color) {
-                    if(count($color->sizes) > 0) {
-                        foreach($color->sizes as $size) {
-                            $size->delete();
-                        }
-                    }
-                    
-                    $color->delete();
+            if(count($color->sizes) > 0) {
+                foreach($color->sizes as $size) {
+                    $size->delete();
                 }
             }
 
-            $delete = $product->delete();
+            $delete = $color->delete();
 
             return response()->json([
                 'success' => $delete,
-                'message' => 'deleted product successfully'
+                'message' => 'deleted color successfully'
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
