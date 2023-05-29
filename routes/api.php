@@ -24,5 +24,9 @@ Route::controller(AuthController::class)->group(function() {
         Route::post('register', 'register');
         Route::post('verify-account', 'verify_user_email');
         Route::post('login', 'login');
+        Route::middleware('auth:sanctum')->group(function() {
+            Route::post('update-password', 'update_password');
+        });
+        
     });
 });
