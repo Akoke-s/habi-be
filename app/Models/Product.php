@@ -36,4 +36,9 @@ class Product extends Model
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
+
+    public function colors(): Relation
+    {
+        return $this->hasMany(Color::class);
+    }
 }
