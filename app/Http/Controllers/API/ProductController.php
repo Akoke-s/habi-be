@@ -20,7 +20,28 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $products = Product::select([
+                'id',
+                'name',
+                'image',
+                'description',
+                'type',
+            ])->orderBy('created_at', 'desc')->get();
+
+            return response()->json([
+                'success' => true,
+                'products' => $products
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
@@ -43,7 +64,7 @@ class ProductController extends Controller
                 'success' => true,
                 'message' => 'Product created successfully',
                 'product' => new ProductResource($product)
-            ], Response::HTTP_OK);
+            ], Response::HTTP_CREATED);
 
         } catch (\Throwable $e) {
             report($e);
@@ -58,9 +79,23 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Product $product)
     {
-        //
+        try {
+
+            return response()->json([
+                'success' => true,
+                'product' => new ProductResource($product)
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**

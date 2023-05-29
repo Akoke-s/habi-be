@@ -25,6 +25,8 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    protected $with = 'category';
+
     /**
      * Get the options for generating the slug.
      */
