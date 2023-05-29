@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\{StoreProductRequest, UpdateProductRequest};
 use App\Http\Resources\ProductResource;
+use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\{JsonResponse, Response};
 
@@ -73,9 +74,24 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, string $id)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        try {
+            $product = $this->productService->update_product($request, $product);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product updated successfully',
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**

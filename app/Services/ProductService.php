@@ -30,4 +30,30 @@ class ProductService {
             ]);
         });
     }
+
+
+    /** create new product
+     * @param App\Http\Requests\UpdateProductRequest $productDetails
+     * @param App\Models\Product $product
+     * @return \Illuminate\Auth\Access\Response|bool
+    */
+    public function update_product(UpdateProductRequest $productDetails, Product $product) {
+        return DB::transaction(function() use ($productDetails, $product) {
+            $upload_url = $product->image;
+
+            if($productDetails['image'] != null)
+            {
+                $upload_url = Cloudinary::uploadApi()->upload($productDetails['image'])['secure_url'];
+            }
+
+            return $product->update([
+                'type' => ProductTypeEnum::READY_TO_WEAR ?? $product->type,
+                'name' => $productDetails['name'] ?? $product->name,
+                'image' => $upload_url,
+                'description' => $productDetails['description'] ?? $product->description,
+                'category_id' => $productDetails['category_id'] ?? $product->category_id,
+                'status' => $productDetails['status'] ?? $product->status
+            ]);
+        });
+    }
 }
