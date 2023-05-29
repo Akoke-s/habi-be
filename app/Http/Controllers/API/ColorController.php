@@ -107,8 +107,29 @@ class ColorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Color $color)
     {
-        //
+        try {
+            if(count($color->sizes) > 0) {
+                foreach($color->sizes as $size) {
+                    $size->delete();
+                }
+            }
+
+            $delete = $color->delete();
+
+            return response()->json([
+                'success' => $delete,
+                'message' => 'deleted color successfully'
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 }
