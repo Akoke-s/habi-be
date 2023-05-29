@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreColorRequest;
+use App\Http\Requests\{StoreColorRequest, UpdateColorRequest};
 use App\Http\Resources\ColorResource;
 use App\Models\{Color, Product};
 use App\Services\ColorService;
@@ -46,7 +46,7 @@ class ColorController extends Controller
             $color = $this->colorService->create_new_color($request, $product);
             return response()->json([
                 'success' => true,
-                'product' => new ColorResource($color)
+                'color' => new ColorResource($color)
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -85,9 +85,23 @@ class ColorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateColorRequest $request, Color $color)
     {
-        //
+        try {
+            $color = $this->colorService->update_color($request, $color);
+            return response()->json([
+                'success' => $color,
+                'message' => 'Updated color successfully'
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**

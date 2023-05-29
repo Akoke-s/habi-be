@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Enums\GenericStatusEnum;
-use App\Http\Requests\StoreColorRequest;
+use App\Http\Requests\{StoreColorRequest, UpdateColorRequest};
+use App\Models\{Color, Product};
 use Illuminate\Support\Facades\DB;
-use App\Models\Product;
 
 class ColorService {
 
@@ -21,6 +21,21 @@ class ColorService {
             return $product->colors()->create([
                 'name' => $request['name'],
                 'status' => GenericStatusEnum::INACTIVE
+            ]);
+        });
+    }
+
+    /** update a color for a given product
+     * @param App\Http\Requests\UpdateColorRequest $request
+     * @param App\Models\Color $color
+     * @return \Illuminate\Auth\Access\Response|bool
+    */
+    public function update_color(UpdateColorRequest $request, Color $color)
+    {
+        return DB::transaction(function () use($request, $color) {
+            return $color->update([
+                'name' => $request['name'] ?? $color->name,
+                'status' => $request['status'] ?? $color->status
             ]);
         });
     }
