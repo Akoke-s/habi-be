@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\API\{
     AuthController, 
-    CategoryController
+    CategoryController,
+    ProductController
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,7 @@ Route::prefix('auth')->group(function() {
 
     Route::middleware('auth:sanctum')->group(function() {
         Route::resource('categories', CategoryController::class);
+        Route::resource('products', ProductController::class);
     });
     
 });
