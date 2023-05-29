@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\{
     AuthController, 
     CategoryController,
+    ColorController,
     ProductController
 };
 use Illuminate\Http\Request;
@@ -43,6 +44,7 @@ Route::prefix('auth')->group(function() {
     Route::middleware('auth:sanctum')->group(function() {
         Route::resource('categories', CategoryController::class);
         Route::resource('products', ProductController::class);
+        Route::resource('colors', ColorController::class);
     });
     
 });
