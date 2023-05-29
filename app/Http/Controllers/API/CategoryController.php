@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\{StoreCategoryRequest, UpdateCategoryRequest};
 use App\Http\Resources\CategoryResource;
+use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Http\{JsonResponse, Response};
 
@@ -43,7 +44,7 @@ class CategoryController extends Controller
                 'message' => 'Category created successfully',
                 'category' => new CategoryResource($category)
             ], Response::HTTP_CREATED);
-            
+
         } catch (\Throwable $e) {
             report($e);
             return response()->json([
@@ -73,9 +74,24 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, string $id)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //
+        try {
+            $category = $this->categoryService->update_category($request, $category);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Category updated successfully',
+            ], Response::HTTP_OK);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**

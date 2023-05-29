@@ -6,7 +6,7 @@ use App\Enums\GenderEnum;
 use App\Models\Category;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\{StoreCategoryRequest, UpdateCategoryRequest};
 
 class CategoryService {
 
@@ -53,13 +53,36 @@ class CategoryService {
             $upload_url = " ";
 
             if($categoryDetails['cover_image'] != null) {
-                $upload_url = Cloudinary::uploadApi()->upload($categoryDetails['profile_picture'])['secure_url'];
+                $upload_url = Cloudinary::uploadApi()->upload($categoryDetails['cover_image'])['secure_url'];
                 // $upload_url = $upload['secure_url'];
             }
 
             return Category::create([
                 'name' => $categoryDetails['name'],
                 'gender' => $categoryDetails['gender'],
+                'cover_image' => $upload_url
+            ]);
+        });
+    }
+
+    /** update category
+     * @param App\Http\Requests\UpdateCategoryRequest $categoryDetails
+     * @param App\Models\Category $category
+     * @return \Illuminate\Auth\Access\Response|bool
+    */
+    public function update_category(UpdateCategoryRequest $categoryDetails, Category $category)
+    {
+        
+        return DB::transaction(function() use ($categoryDetails, $category) {
+            $upload_url = $category->cover_image;
+
+            if($categoryDetails['cover_image'] != null) {
+                $upload_url = Cloudinary::uploadApi()->upload($categoryDetails['cover_image'])['secure_url'];
+            }
+
+            return $category->update([
+                'name' => $categoryDetails['name'] ?? $category->name,
+                'gender' => $categoryDetails['gender'] ?? $category->gender,
                 'cover_image' => $upload_url
             ]);
         });
