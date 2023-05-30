@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('status');
             $table->decimal('total_price');
             $table->string('reference');
-            $table->foreign('cart_key')->references('key')->on('carts');
+            $table->foreign('cart_key')->references('id')->on('carts');
             $table->softDeletes();
             $table->timestamps();
         });
