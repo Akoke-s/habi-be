@@ -11,7 +11,9 @@ class Cart extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['id', 'key', 'user_id'];
+    protected $guarded = [];
+
+    public $incrementing = false;
 
     public function items(): Relation
     {
