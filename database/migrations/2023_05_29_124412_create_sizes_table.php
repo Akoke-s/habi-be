@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Color::class);
             $table->string('name')->nullable(false);
-            $table->float('amount', 12,2)->nullable();
+            $table->float('amount', 12,2)->nullable(false);
             $table->softDeletes();
             $table->timestamps();
         });
