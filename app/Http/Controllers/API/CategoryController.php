@@ -18,9 +18,25 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        try {
+            $categories = Category::select(['name', 'slug', 'cover_image'])->get();;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Categories retrieved successfully',
+                'category' => $categories
+            ], Response::HTTP_CREATED);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
