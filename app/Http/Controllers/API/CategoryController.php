@@ -74,9 +74,25 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $slug)
     {
-        //
+        try {
+            $category = Category::whereSlug($slug)->select(['name', 'slug', 'cover_image'])->first();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Category retrieved successfully',
+                'category' => new CategoryResource($category)
+            ], Response::HTTP_CREATED);
+
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
