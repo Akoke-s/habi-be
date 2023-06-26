@@ -2,35 +2,26 @@
 
 namespace App\Models;
 
-use App\Enums\GenderEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\{HasSlug, SlugOptions};
 
-class Category extends Model
+class CategoryType extends Model
 {
     use HasFactory, SoftDeletes, HasSlug;
 
     protected $guarded = [];
 
-    public function departments(): Relation
+    public function department(): Relation
     {
-        return $this->hasMany(Department::class);
+        return $this->belongsTo(Department::class);
     }
 
-    /**
-     * Scope a query to only include users of a given type.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  mixed  $type
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-
-    public function scopeOfGender($query, $type)
+    public function products(): Relation
     {
-        return $query->where('gender', $type);
+        return $this->hasMany(Product::class);
     }
 
      /**

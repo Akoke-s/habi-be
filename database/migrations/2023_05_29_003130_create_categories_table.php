@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable(false);
-            $table->string('gender')->nullable(false);
             $table->string('cover_image')->nullable(true);
             $table->string('slug')->nullable(false);
             $table->softDeletes();

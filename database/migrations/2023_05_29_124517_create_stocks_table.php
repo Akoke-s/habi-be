@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Size::class);
+            $table->string('sku')->nullable(false);
             $table->integer('init_qty')->nullable(false);
             $table->integer('available_qty')->nullable(false);
             $table->integer('sold_qty')->nullable(false);

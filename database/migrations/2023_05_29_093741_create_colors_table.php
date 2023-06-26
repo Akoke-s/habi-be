@@ -16,6 +16,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Product::class)->nullable(false);
             $table->string('name')->nullable(false);
+            $table->string('title')->nullable(false);
+            $table->string('main_image')->nullable(false);
             $table->string('slug')->nullable(false);
             $table->string('status')->nullable(false);
             $table->softDeletes();
