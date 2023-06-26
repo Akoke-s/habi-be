@@ -45,6 +45,7 @@ Route::prefix('auth')->group(function() {
     Route::middleware('auth:sanctum')->group(function() {
         
         Route::resource('categories', CategoryController::class);
+        // Route::get('categories/{category:slug}', [CategoryController::class, 'bySlug']);
         Route::resource('products', ProductController::class);
 
         Route::resource('colors', ColorController::class)->except(['index']);

@@ -28,10 +28,10 @@ class Category extends Model
      * @return \Illuminate\Database\Eloquent\Builder
      */
 
-    public function scopeOfGender($query, $type)
-    {
-        return $query->where('gender', $type);
-    }
+    // public function scopeOfGender($query, $type)
+    // {
+    //     return $query->where('gender', $type);
+    // }
 
      /**
      * Get the options for generating the slug.
