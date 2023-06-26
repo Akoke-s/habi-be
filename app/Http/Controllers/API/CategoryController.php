@@ -129,8 +129,43 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $slug)
     {
-        //
+        try {
+            $category = Category::whereSlug($slug)->select(['name', 'slug', 'cover_image'])->first();
+            
+            if(count($category->departments) > 0) {
+                foreach($category->departments as $department) {
+                    if(count($department->products) > 0) {
+                        foreach($department->products as $product) {
+                            if(count($product->colors) > 0) {
+                                foreach($product->colors as $color) {
+                                    if(count($color->sizes) > 0) {
+                                        foreach($color->sizes as $size) {
+                                            $size->delete();
+                                        }
+                                    }
+                                    $color->delete();
+                                }
+                            }
+                            $product->delete();
+                        }
+                    }
+                    $department->delete();
+                }
+            }
+            $delete = $category->delete();
+            return response()->json([
+                'success' => $delete,
+                'message' => 'Category deleted successfully',
+            ], Response::HTTP_OK);
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 }
