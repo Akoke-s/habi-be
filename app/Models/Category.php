@@ -15,6 +15,8 @@ class Category extends Model
 
     protected $guarded = [];
 
+    // protected $with = ['departments'];
+
     public function departments(): Relation
     {
         return $this->hasMany(Department::class);
