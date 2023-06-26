@@ -10,36 +10,20 @@ use App\Http\Requests\{StoreCategoryRequest, UpdateCategoryRequest};
 
 class CategoryService {
 
-    /** get men categories
-     * 
+    /**
+     * get all categories
     */
-
-    public function menCategories() {
-        return Category::ofGender(GenderEnum::MEN)->get();
+    public function get_all_categories() {
+        return Category::select(['name', 'slug', 'cover_image'])->get();
     }
 
-    /** get women categories
-     * 
+    /**
+     * get one category
+     * @param App\Models\Category $category
+     * * @return \Illuminate\Auth\Access\Response|bool
     */
-
-    public function womenCategories() {
-        return Category::ofGender(GenderEnum::WOMEN)->get();
-    }
-
-    /** get boys categories
-     * 
-    */
-
-    public function boysCategories() {
-        return Category::ofGender(GenderEnum::KIDS[0])->get();
-    }
-
-    /** get girls categories
-     * 
-    */
-
-    public function girlsCategories() {
-        return Category::ofGender(GenderEnum::KIDS[1])->get();
+    public function get_one_category(Category $category) {
+        return $category->select(['name', 'slug', 'cover_image'])->with(['departments'])->first();
     }
 
     /** create new category
