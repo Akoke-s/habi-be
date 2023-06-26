@@ -23,8 +23,7 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             "name" => ['required', 'string'],
-            'gender' => ['required', 'string'],
-            'cover_image' => ['nullable', 'string'],
+            'cover_image' => ['required', 'string'],
         ];
     }
 }

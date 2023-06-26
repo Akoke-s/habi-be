@@ -50,16 +50,10 @@ class CategoryService {
     {
         
         return DB::transaction(function() use ($categoryDetails) {
-            $upload_url = " ";
-
-            if($categoryDetails['cover_image'] != null) {
-                $upload_url = Cloudinary::uploadApi()->upload($categoryDetails['cover_image'])['secure_url'];
-                // $upload_url = $upload['secure_url'];
-            }
+            $upload_url = Cloudinary::uploadApi()->upload($categoryDetails['cover_image'])['secure_url'];
 
             return Category::create([
                 'name' => $categoryDetails['name'],
-                'gender' => $categoryDetails['gender'],
                 'cover_image' => $upload_url
             ]);
         });

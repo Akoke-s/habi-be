@@ -27,7 +27,7 @@ class CategoryController extends Controller
                 'success' => true,
                 'message' => 'Categories retrieved successfully',
                 'category' => $categories
-            ], Response::HTTP_CREATED);
+            ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
             report($e);
