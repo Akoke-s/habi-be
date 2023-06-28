@@ -4,6 +4,7 @@ use App\Http\Controllers\API\{
     AuthController, 
     CategoryController,
     ColorController,
+    DepartmentController,
     ProductController,
     SizeController
 };
@@ -45,6 +46,7 @@ Route::prefix('auth')->group(function() {
     Route::middleware('auth:sanctum')->group(function() {
         
         Route::resource('categories', CategoryController::class);
+        Route::resource('departments', DepartmentController::class);
         // Route::get('categories/{category:slug}', [CategoryController::class, 'bySlug']);
         Route::resource('products', ProductController::class);
 
