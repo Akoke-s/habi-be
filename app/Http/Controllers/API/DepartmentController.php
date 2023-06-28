@@ -3,11 +3,21 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreDepartmentRequest;
+use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
+use App\Services\DepartmentService;
 use Illuminate\Http\{JsonResponse, Request, Response};
 
 class DepartmentController extends Controller
 {
+
+    public DepartmentService $departmentService;
+
+    public function __construct(DepartmentService $departmentService)
+    {
+        $this->departmentService = $departmentService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -18,7 +28,7 @@ class DepartmentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Departments retrieved successfully',
-                'category' => $departments
+                'departments' => $departments
             ], Response::HTTP_OK);
         } catch (\Throwable $e) {
             report($e);
@@ -41,9 +51,15 @@ class DepartmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreDepartmentRequest $request): JsonResponse
     {
-        //
+        $department = $this->departmentService->create_new_department($request);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category created successfully',
+            'department' => new DepartmentResource($department)
+        ], Response::HTTP_CREATED);
     }
 
     /**
