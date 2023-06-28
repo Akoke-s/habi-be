@@ -46,7 +46,9 @@ Route::prefix('auth')->group(function() {
     Route::middleware('auth:sanctum')->group(function() {
         
         Route::resource('categories', CategoryController::class);
-        Route::resource('departments', DepartmentController::class);
+        Route::resource('departments', DepartmentController::class)->only([
+            'index', 'show', 'store', 'update', 'destroy'
+        ]);
         // Route::get('categories/{category:slug}', [CategoryController::class, 'bySlug']);
         Route::resource('products', ProductController::class);
 

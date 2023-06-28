@@ -7,6 +7,7 @@ use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
 use App\Services\DepartmentService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\{JsonResponse, Request, Response};
 
 class DepartmentController extends Controller
@@ -41,14 +42,6 @@ class DepartmentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreDepartmentRequest $request): JsonResponse
@@ -65,17 +58,17 @@ class DepartmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $slug)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        $department = Department::whereSlug($slug)->select(['name', 'slug', 'category_id'])->first();
+        if(!$department) {
+            throw new ModelNotFoundException();
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Department retrieved successfully',
+            'department' => new DepartmentResource($department)
+        ], Response::HTTP_FOUND);
     }
 
     /**
