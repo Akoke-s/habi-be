@@ -28,7 +28,7 @@ class DepartmentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Departments retrieved successfully',
-                'departments' => $departments
+                'departments' => DepartmentResource::collection($departments)
             ], Response::HTTP_OK);
         } catch (\Throwable $e) {
             report($e);
