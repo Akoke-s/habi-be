@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Department::class)->nullable(false);
             $table->string('name')->nullable(false);
+            $table->string('slug')->nullable(false);
             $table->softDeletes();
             $table->timestamps();
         });

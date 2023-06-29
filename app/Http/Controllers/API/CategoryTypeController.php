@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCategoryTypeRequest;
 use App\Http\Resources\CategoryTypeResource;
-use App\Services\CategoryType;
+use App\Models\CategoryType;
+use App\Services\CategoryTypeService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\{JsonResponse, Request, Response};
 
 class CategoryTypeController extends Controller
 {
-    public CategoryType $categoryService;
+    public CategoryTypeService $categoryService;
 
-    public function __construct(CategoryType $categoryService)
+    public function __construct(CategoryTypeService $categoryService)
     {
         $this->categoryService = $categoryService;
     }
@@ -32,17 +35,42 @@ class CategoryTypeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(StoreCategoryTypeRequest $request)
+    {        
+        try {
+            $type = $this->categoryService->create_category_type($request);
+            return response()->json([
+                'success' => true,
+                'message' => 'Category type created successfully',
+                'data' => new CategoryTypeResource($type)
+            ], Response::HTTP_CREATED);
+        } catch (\Throowable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'Something went wrong. Please try again'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $slug): JsonResponse
     {
-        //
+        $type = CategoryType::whereSlug($slug)->select(['id', 'name', 'slug' , 'department_id'])->first();
+        
+        if(!$type) {
+            throw new ModelNotFoundException();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' =>'Category type retrieved successfully',
+            'data' => new CategoryTypeResource($type)
+        ], Response::HTTP_OK);
     }
 
     /**
