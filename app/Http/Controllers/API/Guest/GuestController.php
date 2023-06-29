@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\Guest;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\{CategoryResource, DepartmentResource};
 use App\Models\Category;
 use App\Models\Department;
 use App\Services\{CategoryService, DepartmentService};
@@ -11,7 +11,7 @@ use Illuminate\Http\{JsonResponse, Response};
 
 class GuestController extends Controller
 {
-    public CategoryService $categoryServicce;
+    public CategoryService $categoryService;
     public DepartmentService $departmentService;
 
     public function __construct(
@@ -19,7 +19,7 @@ class GuestController extends Controller
         DepartmentService $departmentService
     )
     {
-        $this->categoryServicce = $categoryService;
+        $this->categoryService = $categoryService;
         $this->departmentService = $departmentService;
     }
 
@@ -27,7 +27,7 @@ class GuestController extends Controller
     {
         return response()->json([
             'success' => true,
-            'categories' => $this->categoryServicce->get_all_categories()
+            'categories' => CategoryResource::collection($this->categoryService->get_all_categories())
         ], Response::HTTP_OK);
     }
 
@@ -35,7 +35,7 @@ class GuestController extends Controller
     {
         return response()->json([
             'success' => true,
-            'categories' => $this->categoryServicce->get_one_category($category)
+            'category' =>  new CategoryResource($this->categoryService->get_one_category($category))
         ], Response::HTTP_OK);
     }
 
@@ -51,7 +51,7 @@ class GuestController extends Controller
     {
         return response()->json([
             'success' => true,
-            'categories' => new DepartmentResource($this->departmentService->get_one_department($department))
+            'department' => new DepartmentResource($this->departmentService->get_one_department($department))
         ], Response::HTTP_OK);
     }
 

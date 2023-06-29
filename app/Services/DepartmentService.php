@@ -12,7 +12,7 @@ class DepartmentService {
      * get all departments
     */
     public function get_all_departments() {
-        return Department::select(['name', 'slug', 'category_id'])->get();
+        return Department::select(['id', 'name', 'slug', 'category_id'])->get();
     }
 
     /** create new department
@@ -26,7 +26,7 @@ class DepartmentService {
      * * @return \Illuminate\Auth\Access\Response|bool
     */
     public function get_one_department(Department $department) {
-        return $department->select(['name', 'slug', 'category_id'])->first();
+        return $department->select(['id', 'name', 'slug', 'category_id'])->first();
     }
 
     public function create_new_department(StoreDepartmentRequest $departmentDetails) 
