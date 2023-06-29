@@ -14,7 +14,7 @@ class CategoryService {
      * get all categories
     */
     public function get_all_categories() {
-        return Category::select(['name', 'slug', 'cover_image'])->get();
+        return Category::select(['id', 'name', 'slug', 'cover_image'])->get();
     }
 
     /**
@@ -23,7 +23,7 @@ class CategoryService {
      * * @return \Illuminate\Auth\Access\Response|bool
     */
     public function get_one_category(Category $category) {
-        return $category->select(['name', 'slug', 'cover_image'])->with(['departments'])->first();
+        return $category->select(['id', 'name', 'slug', 'cover_image'])->first();
     }
 
     /** create new category

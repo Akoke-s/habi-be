@@ -21,12 +21,12 @@ class CategoryController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $categories = Category::select(['name', 'slug', 'cover_image'])->get();;
+            $categories = Category::select(['id', 'name', 'slug', 'cover_image'])->get();;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Categories retrieved successfully',
-                'category' => $categories
+                'category' => CategoryResource::collection($categories)
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -77,7 +77,7 @@ class CategoryController extends Controller
     public function show(string $slug)
     {
         try {
-            $category = Category::whereSlug($slug)->select(['name', 'slug', 'cover_image'])->first();
+            $category = Category::whereSlug($slug)->select(['id', 'name', 'slug', 'cover_image'])->first();
 
             return response()->json([
                 'success' => true,
