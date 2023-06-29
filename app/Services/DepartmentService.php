@@ -8,10 +8,26 @@ use Illuminate\Support\Facades\DB;
 
 class DepartmentService {
 
+    /**
+     * get all departments
+    */
+    public function get_all_departments() {
+        return Department::select(['name', 'slug', 'category_id'])->get();
+    }
+
     /** create new department
      * @param App\Http\Requests\StoreDepartmentRequest $departmentDetails
      * @return \Illuminate\Auth\Access\Response|bool
     */
+
+    /**
+     * get one department
+     * @param App\Models\Department $department
+     * * @return \Illuminate\Auth\Access\Response|bool
+    */
+    public function get_one_department(Department $department) {
+        return $department->select(['name', 'slug', 'category_id'])->first();
+    }
 
     public function create_new_department(StoreDepartmentRequest $departmentDetails) 
     {

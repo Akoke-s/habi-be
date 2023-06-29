@@ -7,4 +7,6 @@ use Illuminate\Support\Facades\Route;
 Route::controller(GuestController::class)->group(function() {
     Route::get('categories', 'getCategories');
     Route::get('categories/{category:slug}', 'category');
+    Route::get('departments', 'getDepartments');
+    Route::get('departments/{department:slug}', 'department');
 });
