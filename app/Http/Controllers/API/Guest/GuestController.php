@@ -3,31 +3,35 @@
 namespace App\Http\Controllers\API\Guest;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\{CategoryResource, DepartmentResource};
+use App\Http\Resources\{CategoryResource, CategoryTypeResource, DepartmentResource};
 use App\Models\Category;
 use App\Models\Department;
-use App\Services\{CategoryService, DepartmentService};
+use App\Services\{CategoryService, CategoryTypeService, DepartmentService};
 use Illuminate\Http\{JsonResponse, Response};
 
 class GuestController extends Controller
 {
     public CategoryService $categoryService;
     public DepartmentService $departmentService;
+    public CategoryTypeService $categoryTypeService;
 
     public function __construct(
         CategoryService $categoryService, 
-        DepartmentService $departmentService
+        DepartmentService $departmentService,
+        CategoryTypeService $categoryTypeService
+
     )
     {
         $this->categoryService = $categoryService;
         $this->departmentService = $departmentService;
+        $this->categoryTypeService = $categoryTypeService;
     }
 
     public function getCategories(): JsonResponse
     {
         return response()->json([
             'success' => true,
-            'categories' => CategoryResource::collection($this->categoryService->get_all_categories())
+            'data' => CategoryResource::collection($this->categoryService->get_all_categories())
         ], Response::HTTP_OK);
     }
 
@@ -35,7 +39,7 @@ class GuestController extends Controller
     {
         return response()->json([
             'success' => true,
-            'category' =>  new CategoryResource($this->categoryService->get_one_category($category))
+            'data' =>  new CategoryResource($this->categoryService->get_one_category($category))
         ], Response::HTTP_OK);
     }
 
@@ -51,8 +55,24 @@ class GuestController extends Controller
     {
         return response()->json([
             'success' => true,
-            'department' => new DepartmentResource($this->departmentService->get_one_department($department))
+            'data' => new DepartmentResource($this->departmentService->get_one_department($department))
         ], Response::HTTP_OK);
+    }
+
+    public function getTypes(): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'data' => CategoryTypeResource::collection($this->categoryTypeService->get_category_types())
+        ]);
+    }
+
+    public function type(string $slug): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'data' => new CategoryTypeResource($this->categoryTypeService->get_category_type($slug))
+        ]);
     }
 
 }
