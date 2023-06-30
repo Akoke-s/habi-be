@@ -22,7 +22,9 @@ class StoreColorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => ["required", "string"]
+            "name" => ["required", "string"],
+            "title" => ["required", "string"],
+            "main_image" => ["required", "string"]
         ];
     }
 }

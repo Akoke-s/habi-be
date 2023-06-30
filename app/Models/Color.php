@@ -19,14 +19,29 @@ class Color extends Model
         'status' => GenericStatusEnum::class
     ];
 
+    public function product(): Relation
+    {
+        return $this->belongsTo(Product::class);
+    }
+
     /**
      * Get the options for generating the slug.
      */
     public function getSlugOptions() : SlugOptions
     {
         return SlugOptions::create()
-            ->generateSlugsFrom('name')
+            ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     public function sizes(): Relation
