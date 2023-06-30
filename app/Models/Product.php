@@ -20,12 +20,10 @@ class Product extends Model
         'type' => ProductTypeEnum::class
     ];
 
-    public function category(): Relation
+    public function category_type(): Relation
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(CategoryType::class);
     }
-
-    protected $with = 'category';
 
     /**
      * Get the options for generating the slug.
