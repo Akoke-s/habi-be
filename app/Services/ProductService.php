@@ -14,7 +14,7 @@ class ProductService {
      * get all products
     */
     public function get_all_products() {
-        return Product::select(['name', 'slug', 'description', 'material', 'status', 'category_type_id'])->get();
+        return Product::select(['name', 'slug', 'description', 'material', 'status', 'sku', 'category_type_id'])->get();
     }
 
     /**
@@ -22,7 +22,7 @@ class ProductService {
      * @param string $slug
     */
     public function get_a_single_product(string $slug) {
-        return Product::whereSlug($slug)->select(['name', 'slug', 'description', 'material', 'status', 'category_type_id'])->first();
+        return Product::whereSlug($slug)->select(['name', 'slug', 'description', 'material', 'status', 'sku', 'category_type_id'])->first();
     }
     /** create new product
      * @param App\Http\Requests\StoreProductRequest $productDetails
