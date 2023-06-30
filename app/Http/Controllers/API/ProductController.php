@@ -27,12 +27,12 @@ class ProductController extends Controller
                 'image',
                 'description',
                 'slug',
-                'type',
+                'category_type_id',
             ])->orderBy('created_at', 'desc')->get();
 
             return response()->json([
                 'success' => true,
-                'products' => $products
+                'data' => ProductResource::collection($products)
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -64,7 +64,7 @@ class ProductController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Product created successfully',
-                'product' => new ProductResource($product)
+                'data' => new ProductResource($product)
             ], Response::HTTP_CREATED);
 
         } catch (\Throwable $e) {
@@ -80,13 +80,21 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(string $slug)
     {
         try {
-
+            $product = Product::whereSlug($slug)->select([
+                'id', 
+                'name', 
+                'status',
+                'slug',
+                'description',
+                'material',
+                'category_type_id'
+            ])->first();
             return response()->json([
                 'success' => true,
-                'product' => new ProductResource($product)
+                'data' => new ProductResource($product)
             ], Response::HTTP_OK);
 
         } catch (\Throwable $e) {
@@ -110,59 +118,42 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, string $slug)
     {
-        try {
-            $product = $this->productService->update_product($request, $product);
+        
+        $response = $this->productService->update_product($request, $slug);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Product updated successfully',
-            ], Response::HTTP_OK);
+        return response()->json([
+            'success' => true,
+            'message' =>$response ? 'Product updated successfully' : 'Product could not be updated',
+        ], Response::HTTP_OK);
 
-        } catch (\Throwable $e) {
-            report($e);
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'message' => 'Something went wrong. Please try again'
-            ], Response::HTTP_BAD_REQUEST);
-        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(string $slug)
     {
-        try {
-            $colors = $product->colors;
-            if(count($colors) > 0) {
-                foreach($colors as $color) {
-                    if(count($color->sizes) > 0) {
-                        foreach($color->sizes as $size) {
-                            $size->delete();
-                        }
+        $product = Product::whereSlug($slug)->select(['id'])->first();
+        $colors = $product->colors;
+        if(count($colors) > 0) {
+            foreach($colors as $color) {
+                if(count($color->sizes) > 0) {
+                    foreach($color->sizes as $size) {
+                        $size->delete();
                     }
-                    
-                    $color->delete();
                 }
+                
+                $color->delete();
             }
-
-            $delete = $product->delete();
-
-            return response()->json([
-                'success' => $delete,
-                'message' => 'deleted product successfully'
-            ], Response::HTTP_OK);
-
-        } catch (\Throwable $e) {
-            report($e);
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'message' => 'Something went wrong. Please try again'
-            ], Response::HTTP_BAD_REQUEST);
         }
+
+        $delete = $product->delete();
+
+        return response()->json([
+            'success' => $delete,
+            'message' => $delete ? 'Product deleted successfully' : 'Product could not be deleted'
+        ], $delete ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST);
     }
 }
