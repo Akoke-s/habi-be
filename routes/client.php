@@ -9,4 +9,6 @@ Route::controller(GuestController::class)->group(function() {
     Route::get('categories/{category:slug}', 'category');
     Route::get('departments', 'getDepartments');
     Route::get('departments/{department:slug}', 'department');
+    Route::get('types', 'getTypes');
+    Route::get('types/{type:slug}', 'type');
 });

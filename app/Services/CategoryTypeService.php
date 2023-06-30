@@ -18,6 +18,16 @@ class CategoryTypeService {
     }
 
     /**
+     * get a single category type
+     * @param string $slug
+     * @return \Illuminate\Auth\Access\Response|bool
+    */
+    public function get_category_type(string $slug)
+    {
+        return CategoryType::whereSlug($slug)->select(['id', 'name', 'department_id'])->first();
+    }
+
+    /**
      * create a new category type
      * @param App\Http\Requests\StoreCategoryTypeRequest $typeDetails
      * @return \Illuminate\Auth\Access\Response|bool
