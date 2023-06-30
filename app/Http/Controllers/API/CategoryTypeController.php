@@ -89,8 +89,35 @@ class CategoryTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $slug)
     {
-        //
+        $type = CategoryType::whereSlug($slug)->select(['id'])->first();
+
+        if(!$type) {
+            throw new ModelNotFoundException();
+        }
+
+        if(count($type->products) > 0) {
+            foreach($type->products as $product) {
+                if(count($product->colors) > 0) {
+                    foreach($product->colors as $color) {
+                        if(count($color->sizes) > 0) {
+                            foreach($color->sizes as $size) {
+                                $size->delete();
+                            }
+                        }
+                        $color->delete();
+                    }
+                }
+                $product->delete();
+            }
+        }
+
+        $deleted = $type->delete();
+
+        return response()->json([
+            'success' => $deleted,
+            'message' => $deleted ? 'Deleted type successfully' : 'Unable to delete type'
+        ], Response::HTTP_OK);
     }
 }
