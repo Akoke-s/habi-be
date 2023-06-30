@@ -15,7 +15,8 @@ class ColorController extends Controller
 
     public function __construct(
         public ColorService $colorService
-    ){}
+    ) {
+    }
     /**
      * Display a listing of the resource.
      */
@@ -24,9 +25,8 @@ class ColorController extends Controller
         try {
             return response()->json([
                 'success' => true,
-                'colors' => $product->colors
+                'data' => $product->colors
             ], Response::HTTP_OK);
-
         } catch (\Throwable $e) {
             report($e);
             return response()->json([
@@ -48,7 +48,6 @@ class ColorController extends Controller
                 'success' => true,
                 'color' => new ColorResource($color)
             ], Response::HTTP_OK);
-
         } catch (\Throwable $e) {
             report($e);
             return response()->json([
@@ -62,15 +61,14 @@ class ColorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Color $color)
+    public function show(string $slug)
     {
         try {
 
             return response()->json([
                 'success' => true,
-                'color' => new ColorResource($color)
+                'color' => new ColorResource($this->colorService->get_one_color($slug))
             ], Response::HTTP_OK);
-
         } catch (\Throwable $e) {
             report($e);
             return response()->json([
@@ -85,51 +83,33 @@ class ColorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateColorRequest $request, Color $color)
+    public function update(UpdateColorRequest $request, string $slug)
     {
-        try {
-            $color = $this->colorService->update_color($request, $color);
-            return response()->json([
-                'success' => $color,
-                'message' => 'Updated color successfully'
-            ], Response::HTTP_OK);
-
-        } catch (\Throwable $e) {
-            report($e);
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'message' => 'Something went wrong. Please try again'
-            ], Response::HTTP_BAD_REQUEST);
-        }
+        $color = $this->colorService->update_color($request, $slug);
+        return response()->json([
+            'success' => $color ? $color : false,
+            'message' => $color ? 'Updated color successfully' : 'Failed to update color'
+        ], $color ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Color $color)
+    public function destroy(string $slug)
     {
-        try {
-            if(count($color->sizes) > 0) {
-                foreach($color->sizes as $size) {
-                    $size->delete();
-                }
+        $color = Color::whereSlug($slug)->select(['id'])->first();
+
+        if (count($color->sizes) > 0) {
+            foreach ($color->sizes as $size) {
+                $size->delete();
             }
-
-            $delete = $color->delete();
-
-            return response()->json([
-                'success' => $delete,
-                'message' => 'deleted color successfully'
-            ], Response::HTTP_OK);
-
-        } catch (\Throwable $e) {
-            report($e);
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'message' => 'Something went wrong. Please try again'
-            ], Response::HTTP_BAD_REQUEST);
         }
+
+        $deleted = $color->delete();
+
+        return response()->json([
+            'success' => $deleted ? $deleted : false,
+            'message' => $deleted ? 'Deleted color successfully' : 'Failed to delete color'
+        ], $deleted ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST);
     }
 }

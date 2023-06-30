@@ -23,6 +23,8 @@ class UpdateColorRequest extends FormRequest
     {
         return [
             'name' => ['nullable', 'string'],
+            'title' => ['nullable', 'string'],
+            'main_image' => ['nullable', 'string'],
             'status' => ['nullable', 'string'],
         ];
     }
