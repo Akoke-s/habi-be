@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreCategoryTypeRequest;
+use App\Http\Requests\{StoreCategoryTypeRequest, UpdateCategoryTypeRequest};
 use App\Http\Resources\CategoryTypeResource;
 use App\Models\CategoryType;
 use App\Services\CategoryTypeService;
@@ -76,9 +76,14 @@ class CategoryTypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCategoryTypeRequest $request, string $slug)
     {
-        //
+        $response = $this->categoryService->update_category_type($request, $slug);
+
+        return response()->json([
+            'success' => $response,
+            'message' => $response ? 'Category Type updated successfully' : 'An error occurred while updating type',
+        ], Response::HTTP_OK);
     }
 
     /**

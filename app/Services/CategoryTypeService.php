@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Http\Requests\StoreCategoryTypeRequest;
+use App\Http\Requests\{StoreCategoryTypeRequest, UpdateCategoryTypeRequest};
 use App\Models\CategoryType;
 use Illuminate\Support\Facades\DB;
 
@@ -29,6 +29,23 @@ class CategoryTypeService {
             return CategoryType::create([
                 'name' => $typeDetails['name'],
                 'department_id' => $typeDetails['department_id'],
+            ]);
+        });
+    }
+
+     /** update a department
+     * @param App\Http\Requests\UpdateCategoryTypeRequest $typeDetails
+     * @param string $slug
+     * @return \Illuminate\Auth\Access\Response|bool
+    */
+
+    public function update_category_type(UpdateCategoryTypeRequest $typeDetails, string $slug)
+    {
+        return DB::transaction(function () use ($typeDetails, $slug) {
+            $type = CategoryType::whereSlug($slug)->first();
+            return $type->update([
+                'name' => $typeDetails['name'] ?? $type->name,
+                'department_id' => $typeDetails['department_id'] ?? $type->department_id,
             ]);
         });
     }
