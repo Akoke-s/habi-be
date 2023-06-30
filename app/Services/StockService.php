@@ -14,6 +14,7 @@ class StockService {
     public function create_stock(int $qty, Size $size) 
     {
         return $size->stock()->create([
+            'sku' => $size->color->product->sku,
             'init_qty' => $qty,
             'available_qty' => $qty,
             'sold_qty' => 0,

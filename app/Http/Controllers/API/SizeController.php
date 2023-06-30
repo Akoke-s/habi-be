@@ -13,7 +13,8 @@ class SizeController extends Controller
 {
     public function __construct(
         public SizeService $sizeService
-    ){}
+    ) {
+    }
     /**
      * Display a listing of the resource.
      */
@@ -22,9 +23,8 @@ class SizeController extends Controller
         try {
             return response()->json([
                 'success' => true,
-                'sizes' => $color->sizes
+                'data' => SizeResource::collection($color->sizes)
             ], Response::HTTP_OK);
-
         } catch (\Throwable $e) {
             report($e);
             return response()->json([
@@ -54,7 +54,6 @@ class SizeController extends Controller
                 'success' => true,
                 'color' => new SizeResource($size)
             ], Response::HTTP_OK);
-
         } catch (\Throwable $e) {
             report($e);
             return response()->json([
@@ -76,7 +75,6 @@ class SizeController extends Controller
                 'success' => true,
                 'size' => new SizeResource($size)
             ], Response::HTTP_OK);
-
         } catch (\Throwable $e) {
             report($e);
             return response()->json([
@@ -93,21 +91,11 @@ class SizeController extends Controller
      */
     public function update(UpdateSizeRequest $request, Size $size)
     {
-        try {
-            $updated_size = $this->sizeService->update_size($request, $size);
-            return response()->json([
-                'success' => $updated_size,
-                'message' => 'Updated size successfully'
-            ], Response::HTTP_OK);
-
-        } catch (\Throwable $e) {
-            report($e);
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'message' => 'Something went wrong. Please try again'
-            ], Response::HTTP_BAD_REQUEST);
-        }
+        $updated_size = $this->sizeService->update_size($request, $size);
+        return response()->json([
+            'success' => $updated_size ? $updated_size : false,
+            'message' => $updated_size ? 'Updated size successfully' : 'Failed to update size'
+        ], $updated_size ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST);
     }
 
     /**
@@ -115,27 +103,16 @@ class SizeController extends Controller
      */
     public function destroy(Size $size): JsonResponse
     {
-        
-        try {
-            if($size->stock) {
-                $size->stock->delete();
-            }
 
-            $delete = $size->delete();
-
-            return response()->json([
-                'success' => $delete,
-                'message' => 'deleted size successfully'
-            ], Response::HTTP_OK);
-
-        } catch (\Throwable $e) {
-            report($e);
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'message' => 'Something went wrong. Please try again'
-            ], Response::HTTP_BAD_REQUEST);
+        if ($size->stock) {
+            $size->stock->delete();
         }
 
+        $delete = $size->delete();
+
+        return response()->json([
+            'success' => $delete ? $delete : false,
+            'message' => $delete ? 'Deleted size successfully' : 'Failed to delete size'
+        ], $delete ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST);
     }
 }
