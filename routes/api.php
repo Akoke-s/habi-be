@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\{
     AuthController, 
     CategoryController,
+    CategoryTypeController,
     ColorController,
     DepartmentController,
     ProductController,
@@ -47,6 +48,9 @@ Route::prefix('auth')->group(function() {
         
         Route::resource('categories', CategoryController::class);
         Route::resource('departments', DepartmentController::class)->only([
+            'index', 'show', 'store', 'update', 'destroy'
+        ]);
+        Route::resource('types', CategoryTypeController::class)->only([
             'index', 'show', 'store', 'update', 'destroy'
         ]);
         // Route::get('categories/{category:slug}', [CategoryController::class, 'bySlug']);

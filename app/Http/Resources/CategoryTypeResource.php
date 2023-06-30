@@ -14,6 +14,14 @@ class CategoryTypeResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'department' => $this->department,
+            'slug' => $this->slug,
+            'products' => $this->products,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
+        ];
     }
 }
