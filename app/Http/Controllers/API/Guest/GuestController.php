@@ -58,7 +58,7 @@ class GuestController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => new DepartmentResource($this->departmentService->get_one_department($department))
+            'data' => new DepartmentResource($department)
         ], Response::HTTP_OK);
     }
 

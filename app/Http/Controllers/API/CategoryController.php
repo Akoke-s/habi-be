@@ -133,7 +133,7 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::whereSlug($slug)->select(['name', 'slug', 'cover_image'])->first();
-            
+
             if(count($category->departments) > 0) {
                 foreach($category->departments as $department) {
                     if(count($department->products) > 0) {

@@ -9,6 +9,7 @@ use App\Http\Controllers\API\{
     ProductController,
     SizeController
 };
+use App\Http\Controllers\API\Guest\GuestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +70,17 @@ Route::prefix('auth')->group(function() {
                 Route::delete('/{size:id}', 'destroy');
             });
         });
+    });
+
+    Route::controller(GuestController::class)->group(function() {
+        Route::get('categories', 'getCategories');
+        Route::get('categories/{category:slug}', 'category');
+        Route::get('departments', 'getDepartments');
+        Route::get('departments/{department:slug}', 'department');
+        Route::get('types', 'getTypes');
+        Route::get('types/{type:slug}', 'type');
+        Route::get('products', 'products');
+        Route::get('products/{slug}', 'product');
     });
     
 });

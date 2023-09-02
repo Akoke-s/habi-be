@@ -19,7 +19,7 @@ class CategoryTypeResource extends JsonResource
             'name' => $this->name,
             'department' => $this->department,
             'slug' => $this->slug,
-            'products' => $this->products,
+            'products' => ProductResource::collection($this->products),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
