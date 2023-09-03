@@ -18,7 +18,7 @@ class GuestController extends Controller
     public ProductService $productService;
 
     public function __construct(
-        CategoryService $categoryService, 
+        CategoryService $categoryService,
         DepartmentService $departmentService,
         CategoryTypeService $categoryTypeService,
         ProductService $productService
@@ -93,5 +93,20 @@ class GuestController extends Controller
             'data' => new ProductResource($this->productService->get_a_single_product($slug))
         ]);
     }
+
+    // get category
+    // get department
+    // get type
+    // get products
+    public function productsForType(Department $department): JsonResponse
+    {
+        $products = $department->products;
+
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ]);
+    }
+
 
 }

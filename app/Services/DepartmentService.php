@@ -29,7 +29,7 @@ class DepartmentService {
         return $department->select(['id', 'name', 'slug', 'category_id'])->first();
     }
 
-    public function create_new_department(StoreDepartmentRequest $departmentDetails) 
+    public function create_new_department(StoreDepartmentRequest $departmentDetails)
     {
         return DB::transaction(function() use ($departmentDetails) {
             return Department::create([
@@ -45,10 +45,10 @@ class DepartmentService {
      * @return \Illuminate\Auth\Access\Response|bool
     */
 
-    public function update_department(UpdateDepartmentRequest $departmentDetails, Department $department) 
+    public function update_department(UpdateDepartmentRequest $departmentDetails, Department $department)
     {
         return DB::transaction(function() use ($departmentDetails, $department) {
-            
+
             return $department->update([
                 'name' => $departmentDetails['name'] ?? $department->name,
                 'category_id' => $departmentDetails['category_id'] ?? $department->category_id

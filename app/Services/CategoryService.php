@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -32,7 +32,7 @@ class CategoryService {
     */
     public function create_new_category(StoreCategoryRequest $categoryDetails)
     {
-        
+
         return DB::transaction(function() use ($categoryDetails) {
             $upload_url = Cloudinary::uploadApi()->upload($categoryDetails['cover_image'])['secure_url'];
 
@@ -50,7 +50,7 @@ class CategoryService {
     */
     public function update_category(UpdateCategoryRequest $categoryDetails, Category $category)
     {
-        
+
         return DB::transaction(function() use ($categoryDetails, $category) {
             $upload_url = $category->cover_image;
 

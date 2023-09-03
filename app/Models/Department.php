@@ -19,9 +19,14 @@ class Department extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function category_types(): Relation
+    public function types(): Relation
     {
-        return $this->hasMany(CategoryType::class);
+        return $this->hasMany(CategoryType::class, 'department_id');
+    }
+
+    public function products()
+    {
+        return $this->hasManyThrough(Product::class, CategoryType::class);
     }
 
      /**

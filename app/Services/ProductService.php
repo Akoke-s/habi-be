@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -30,7 +30,7 @@ class ProductService {
     */
     public function create_new_product(StoreProductRequest $productDetails) {
         return DB::transaction(function() use ($productDetails) {
-            
+
             $upload_url = Cloudinary::uploadApi()->upload($productDetails['image'])['secure_url'];
 
             return Product::create([
