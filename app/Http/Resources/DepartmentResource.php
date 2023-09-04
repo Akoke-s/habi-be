@@ -19,7 +19,8 @@ class DepartmentResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'category' => $this->category,
-            'types' => CategoryTypeResource::collection($this->category_types),
+            'types' => CategoryTypeResource::collection($this->types),
+            'products' => ProductResource::collection($this->products),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
