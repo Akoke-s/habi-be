@@ -12,15 +12,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cart_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(Cart::class)->nullable(false);
-            $table->foreignIdFor(Product::class);
-            $table->foreignIdFor(Size::class);
-            $table->unsignedInteger('qty');
-            $table->softDeletes();
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('cart_items')) {
+            Schema::create('cart_items', function (Blueprint $table) {
+                $table->id();
+                $table->foreignIdFor(Cart::class)->nullable(false);
+                $table->foreignIdFor(Product::class);
+                $table->foreignIdFor(Size::class);
+                $table->unsignedInteger('qty');
+                $table->softDeletes();
+                $table->timestamps();
+            });
+        }
+
     }
 
     /**
