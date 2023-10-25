@@ -23,8 +23,8 @@ console_command = "php /var/www/html/artisan tinker"
   DB_CONNECTION="mysql"
   DB_HOST="aws.connect.psdb.cloud"
   DB_PORT=3306
-  DB_DATABASE="habi-fifth-merchant"
-  MYSQL_ATTR_SSL_CA="/etc/ssl/cert.pem"
+  DB_DATABASE="habi-merchant-db-api"
+  MYSQL_ATTR_SSL_CA="/etc/ssl/certs/ca-certificates.crt"
 
 [http_service]
   internal_port = 8080
