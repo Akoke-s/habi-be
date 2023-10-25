@@ -14,28 +14,30 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(User::class);
-            $table->foreignIdFor(CartItem::class);
-            $table->string('firstname');
-            $table->string('lastname');
-            $table->string('company');
-            $table->string('address');
-            $table->string('country');
-            $table->string('state');
-            $table->string('city');
-            $table->string('zip');
-            $table->string('phone');
-            $table->string('email');
-            $table->string('shipping_method');
-            $table->string('transaction_id');
-            $table->string('status');
-            $table->decimal('total_price');
-            $table->string('reference');
-            $table->softDeletes();
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('orders')) {
+            Schema::create('orders', function (Blueprint $table) {
+                $table->id();
+                $table->foreignIdFor(User::class);
+                $table->foreignIdFor(CartItem::class);
+                $table->string('firstname');
+                $table->string('lastname');
+                $table->string('company');
+                $table->string('address');
+                $table->string('country');
+                $table->string('state');
+                $table->string('city');
+                $table->string('zip');
+                $table->string('phone');
+                $table->string('email');
+                $table->string('shipping_method');
+                $table->string('transaction_id');
+                $table->string('status');
+                $table->decimal('total_price');
+                $table->string('reference');
+                $table->softDeletes();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
