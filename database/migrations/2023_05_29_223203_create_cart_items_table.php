@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\{Product, Size};
+use App\Models\{Cart, Product, Size};
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,11 +14,10 @@ return new class extends Migration
     {
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
-            $table->string('cart_id');
+            $table->foreignIdFor(Cart::class)->nullable(false);
             $table->foreignIdFor(Product::class);
             $table->foreignIdFor(Size::class);
             $table->unsignedInteger('qty');
-            $table->foreign('cart_id')->references('id')->on('carts');
             $table->softDeletes();
             $table->timestamps();
         });
