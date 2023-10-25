@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CartItem;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,14 +10,14 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      */
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->string('cart_key');
+            $table->foreignIdFor(CartItem::class);
             $table->string('firstname');
             $table->string('lastname');
             $table->string('company');
@@ -32,7 +33,6 @@ return new class extends Migration
             $table->string('status');
             $table->decimal('total_price');
             $table->string('reference');
-            $table->foreign('cart_key')->references('id')->on('carts');
             $table->softDeletes();
             $table->timestamps();
         });
