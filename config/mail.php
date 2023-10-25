@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    // 'default' => env('MAIL_MAILER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -32,6 +32,8 @@ return [
     |            "postmark", "log", "array", "failover"
     |
     */
+
+    'default' => 'mailcoach',
 
     'mailers' => [
         'smtp' => [
@@ -84,6 +86,12 @@ return [
                 'smtp',
                 'log',
             ],
+        ],
+
+        'mailcoach' => [
+            'transport' => 'mailcoach',
+            'domain' => 'kaya.mailcoach.app',
+            'token' => env('MAILCOACH_TOKEN'),
         ],
     ],
 
