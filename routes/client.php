@@ -13,5 +13,5 @@ Route::controller(GuestController::class)->group(function() {
     Route::get('types', 'getTypes');
     Route::get('types/{type:slug}', 'type');
     Route::get('products', 'products');
-    Route::get('products/{slug}', 'product');
+    Route::get('products/{product:slug}', 'product');
 });

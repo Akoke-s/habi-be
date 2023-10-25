@@ -86,11 +86,11 @@ class GuestController extends Controller
         ]);
     }
 
-    public function product(string $slug): JsonResponse
+    public function product(Product $product): JsonResponse
     {
         return response()->json([
             'success' => true,
-            'data' => new ProductResource($this->productService->get_a_single_product($slug))
+            'data' => new ProductResource($product)
         ]);
     }
 

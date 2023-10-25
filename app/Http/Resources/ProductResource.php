@@ -21,6 +21,7 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'category_type' => $this->category_type,
             'colors' => ColorResource::collection($this->colors),
+            'sizes' => SizeResource::collection($this->sizes,),
             'status' => $this->status,
             'slug' => $this->slug,
             'created_at' => $this->created,

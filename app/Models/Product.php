@@ -38,6 +38,11 @@ class Product extends Model
 
     public function colors(): Relation
     {
-        return $this->hasMany(Color::class);
+        return $this->hasMany(Color::class, 'product_id');
+    }
+
+    public function sizes(): Relation
+    {
+        return $this->hasManyThrough(Size::class, Color::class);
     }
 }

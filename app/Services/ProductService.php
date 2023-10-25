@@ -22,7 +22,7 @@ class ProductService {
      * @param string $slug
     */
     public function get_a_single_product(string $slug) {
-        return Product::whereSlug($slug)->select(['name', 'slug', 'description', 'material', 'status', 'sku', 'category_type_id'])->first();
+        return Product::whereSlug($slug)->first();
     }
     /** create new product
      * @param App\Http\Requests\StoreProductRequest $productDetails
