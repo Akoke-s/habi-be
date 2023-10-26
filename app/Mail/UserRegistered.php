@@ -21,7 +21,7 @@ class UserRegistered extends Mailable
     // protected User $user;
 
     public function __construct(
-        public User $user, 
+        public User $user,
         public VerifyEmail $verifyEmail
     ){}
 
@@ -31,7 +31,7 @@ class UserRegistered extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('welcome@habiclothiers.com', 'Habic'),
+            from: new Address(env('MAIL_FROM_ADDRESS'), 'Habiclothiers'),
             subject: 'Welcome to ' . config('app.name') . ' ' . $this->user->fullname,
         );
     }

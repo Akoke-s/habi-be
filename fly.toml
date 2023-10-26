@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for habiclothiers on 2023-10-26T08:34:16+01:00
+# fly.toml app configuration file generated for habiclothiers on 2023-10-26T08:50:33+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -13,7 +13,7 @@ console_command = "php /var/www/html/artisan tinker"
     PHP_VERSION = "8.1"
 
 [deploy]
-  release_command = "php artisan migrate --force"
+  release_command="php artisan migrate --force"
 
 [env]
   APP_ENV = "production"
@@ -28,6 +28,7 @@ console_command = "php /var/www/html/artisan tinker"
   MYSQL_ATTR_SSL_CA = "/etc/ssl/certs/ca-certificates.crt"
   SESSION_DRIVER = "cookie"
   SESSION_SECURE_COOKIE = "true"
+  MAIL_FROM_ADDRESS="kaya@mailcoach.cloud"
 
 [http_service]
   internal_port = 8080
