@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\API;
 
 use App\Exceptions\IncorrectPasswordException;
+use App\Exceptions\ResourceNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\{
-    LoginRequest, 
+    LoginRequest,
     RegisterUserRequest,
     UpdatePasswordRequest,
     VerifyAccountRequest
 };
 use App\Http\Resources\UserResource;
 use App\Services\{AuthService, EmailService};
-use Illuminate\Http\{JsonResponse, Response};
+use Illuminate\Http\{JsonResponse, Request, Response};
 use App\Models\User;
 use Illuminate\Support\Facades\{Auth, Hash,};
 
@@ -102,7 +103,7 @@ class AuthController extends Controller
     /** update user password
      * @param App\Http\Requests\UpdatePasswordRequest $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
     */
     public function update_password(UpdatePasswordRequest $request): JsonResponse
     {
@@ -129,5 +130,26 @@ class AuthController extends Controller
                 'message' => 'Something went wrong. Please try again'
             ], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    public function check_email(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email:rfc,dns',
+        ]);
+        $user = User::whereEmail($validated['email'])->first();
+
+        if($user) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User exists',
+                'user' => new UserResource($user)
+            ], 200);
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'User not found'
+        ], 404);
+
     }
 }

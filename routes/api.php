@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\{
-    AuthController, 
+    AuthController,
     CategoryController,
     CategoryTypeController,
     ColorController,
@@ -30,8 +30,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Route::controller(AuthController::class)->group(function() {
 //     Route::prefix('auth')->group(function() {
-        
-        
+
+
 //     });
 // });
 
@@ -40,13 +40,14 @@ Route::prefix('auth')->group(function() {
         Route::post('register', 'register');
         Route::post('verify-account', 'verify_user_email');
         Route::post('login', 'login');
+        Route::post('check-email', 'check_email');
         Route::middleware('auth:sanctum')->group(function() {
             Route::post('update-password', 'update_password');
         });
     });
 
     Route::middleware('auth:sanctum')->group(function() {
-        
+
         Route::resource('categories', CategoryController::class);
         Route::resource('departments', DepartmentController::class)->only([
             'index', 'show', 'store', 'update', 'destroy'
@@ -82,5 +83,5 @@ Route::prefix('auth')->group(function() {
         Route::get('products', 'products');
         Route::get('products/{slug}', 'product');
     });
-    
+
 });
