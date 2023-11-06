@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\{App, Schema};
+use Illuminate\Routing\UrlGenerator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,19 +19,11 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(UrlGenerator $url): void
     {
         Schema::defaultStringLength(191);
-        if(App::environment() == "live")
-        {
-            $url = \Request::url();
-            $check = strstr($url,"http://");
-            if($check)
-            {
-                $newUrl = str_replace("http","https",$url);
-                header("Location:".$newUrl);
-
-            }
+        if (env('APP_ENV') == 'production') {
+            $url->forceScheme('https');
         }
     }
 }
