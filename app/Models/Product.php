@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use BinaryCats\Sku\HasSku;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Sluggable\{HasSlug, SlugOptions};
 
 class Product extends Model
@@ -18,12 +19,17 @@ class Product extends Model
 
     protected $casts = [
         'status' => GenericStatusEnum::class,
-        'type' => ProductTypeEnum::class
+        'type' => ProductTypeEnum::class,
     ];
 
     public function category_type(): Relation
     {
         return $this->belongsTo(CategoryType::class);
+    }
+
+    public function department(): Relation
+    {
+        return $this->belongsTo(Department::class);
     }
 
     /**
@@ -36,13 +42,24 @@ class Product extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function colors(): Relation
+    public function stocks(): Relation
     {
-        return $this->hasMany(Color::class, 'product_id');
+        return $this->hasMany(Stock::class);
     }
 
-    public function sizes(): Relation
+    public function sizes(): Attribute
     {
-        return $this->hasManyThrough(Size::class, Color::class);
+        return Attribute::make(
+            get: fn ($value) => json_decode($value, true),
+            set: fn ($value) => json_encode($value)
+        );
+    }
+
+    public function colors(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => json_decode($value, true),
+            set: fn ($value) => json_encode($value)
+        );
     }
 }

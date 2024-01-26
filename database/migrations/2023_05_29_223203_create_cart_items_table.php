@@ -17,7 +17,8 @@ return new class extends Migration
                 $table->id();
                 $table->foreignIdFor(Cart::class)->nullable(false);
                 $table->foreignIdFor(Product::class);
-                $table->foreignIdFor(Size::class);
+                $table->string('size');
+                $table->string('color');
                 $table->unsignedInteger('qty');
                 $table->softDeletes();
                 $table->timestamps();

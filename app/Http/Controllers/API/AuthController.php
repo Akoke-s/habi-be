@@ -75,9 +75,9 @@ class AuthController extends Controller
             if(!Auth::attempt(['email' => $request->validated()['email'], 'password' => $request->validated()['password']]))
             {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => true,
                     'message' => 'Invalid credentials'
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                ], 200);
             }
 
 
@@ -86,11 +86,12 @@ class AuthController extends Controller
             $token = $user->createToken('userAccountToken')->plainTextToken;
 
             return response()->json([
+                'success' => true,
                 'message' => 'Login successful',
                 'user' => new UserResource($user),
                 'token' => $token,
                 'token_type' => 'Bearer',
-            ], Response::HTTP_OK);
+            ], 200);
         } catch(\Throwable $e) {
             report($e);
             return response()->json([

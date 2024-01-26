@@ -13,8 +13,8 @@ class Stock extends Model
 
     protected $guarded = [];
 
-    public function size(): Relation
+    public function product(): Relation
     {
-        return $this->belongsTo(Size::class);
+        return $this->belongsTo(Product::class);
     }
 }

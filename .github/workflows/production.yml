@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - trunk
+name: 🚀 Deploy to sandbox repo
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v2
+    - name: Use Node.js 14
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    # - name: 🔨 Migrations and clearing caches
+    #   run: |
+    #     php artisan migrate
+    #     php artisan optimize
+
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4.2.0
+      with:
+        server: ${{ secrets.FTP_SERVER}}
+        username: ${{ secrets.FTP_USERNAME}}
+        password: ${{ secrets.FTP_PASSWORD}}
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/vendor/**
+          **/public/assets/**
+        script: |
+          ./.scripts/deploy.sh

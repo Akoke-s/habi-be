@@ -25,7 +25,10 @@ class StoreProductRequest extends FormRequest
             'name' => ['required', 'string'],
             'image' => ['required', 'string'],
             'description' => ['required', 'string'],
-            'category_type_id' => ['required', 'integer'],
+            'category_type_id' => ['required', 'integer', 'exists:category_types,id'],
+            'department_id' => ['required', 'integer', 'exists:departments,id'],
+            'colors' => ['required', 'array'],
+            'sizes' => ['required', 'array'],
             'material' => ['required', 'string'],
         ];
     }
