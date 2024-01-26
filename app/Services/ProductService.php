@@ -3,13 +3,19 @@
 namespace App\Services;
 
 use App\Enums\GenericStatusEnum;
+use App\Services\StockService;
 use Illuminate\Support\Facades\DB;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use App\Http\Requests\{StoreProductRequest, UpdateProductRequest};
 use App\Models\Product;
+use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Log;
 
 class ProductService {
 
+    public function __construct(
+        public StockService $stockService
+    ){}
     /**
      * get all products
     */
@@ -33,14 +39,21 @@ class ProductService {
 
             $upload_url = Cloudinary::uploadApi()->upload($productDetails['image'])['secure_url'];
 
-            return Product::create([
+            $product = Product::create([
                 'name' => $productDetails['name'],
                 'image' => $upload_url,
                 'description' => $productDetails['description'],
+                'colors' => $productDetails['colors'],
+                'sizes' => $productDetails['sizes'],
                 'material' => $productDetails['material'],
                 'category_type_id' => $productDetails['category_type_id'],
+                'department_id' => $productDetails['department_id'],
                 'status' => GenericStatusEnum::INACTIVE
             ]);
+
+            $this->stockService->create_stock($product->sizes['data'], $product);
+
+            return $product;
         });
     }
 
